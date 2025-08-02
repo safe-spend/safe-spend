@@ -1,4 +1,4 @@
-// SafeSpendTemp.cpp : Defines the entry point for the application.
+// SafeSpend.cpp : Defines the entry point for the application.
 //
 
 #include "pch.h"
@@ -70,12 +70,12 @@ _Use_decl_annotations_ int CALLBACK WinMain(HINSTANCE instance, HINSTANCE, PSTR 
 
   // Get the AppWindow so we can configure its initial title and size
   auto appWindow{reactNativeWin32App.AppWindow()};
-  appWindow.Title(L"SafeSpendTemp");
+  appWindow.Title(L"Safe Spend");
   appWindow.Resize({1000, 1000});
 
   // Get the ReactViewOptions so we can set the initial RN component to load
   auto viewOptions{reactNativeWin32App.ReactViewOptions()};
-  viewOptions.ComponentName(L"SafeSpendTemp");
+  viewOptions.ComponentName(L"SafeSpend");
 
   // Start the app
   reactNativeWin32App.Start();

@@ -6,9 +6,9 @@
     <CppWinRTOptimized>true</CppWinRTOptimized>
     <MinimalCoreWin>true</MinimalCoreWin>
     <ProjectGuid>{57C4F85F-A776-427F-822A-648B86EE7CC1}</ProjectGuid>
-    <ProjectName>SafeSpendTemp</ProjectName>
+    <ProjectName>SafeSpend</ProjectName>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>SafeSpendTemp</RootNamespace>
+    <RootNamespace>SafeSpend</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <MinimumVisualStudioVersion>17.0</MinimumVisualStudioVersion>

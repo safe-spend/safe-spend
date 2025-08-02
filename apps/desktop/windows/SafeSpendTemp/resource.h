@@ -1,6 +1,6 @@
 //
 // Microsoft Visual C++ generated include file.
-// Used by SafeSpendTemp.rc
+// Used by SafeSpend.rc
 
 #define IDI_ICON1 1008
 // Next default values for new objects

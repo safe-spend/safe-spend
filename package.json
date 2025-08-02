@@ -2,27 +2,22 @@
   "name": "safe-spend",
   "version": "0.0.1",
   "private": true,
+  "description": "Safe Spend - Personal Finance Management Suite",
   "scripts": {
-    "windows": "npx @react-native-community/cli run-windows",
-    "start": "react-native start"
+    "desktop": "pnpm --filter @safe-spend/desktop windows",
+    "desktop:start": "pnpm --filter @safe-spend/desktop start",
+    "bootstrap": "pnpm install",
+    "clean": "pnpm --recursive clean"
   },
   "dependencies": {
-    "@babel/runtime": "^7.28.2",
-    "react": "19.1.0",
-    "react-native": "0.80.2",
-    "react-native-windows": "^0.79.3"
+    "@babel/runtime": "^7.28.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.2",
-    "@babel/preset-env": "^7.25.3",
-    "@react-native-community/cli": "19.1.1",
-    "@react-native/babel-preset": "0.80.2",
-    "@react-native/metro-config": "0.80.2",
-    "@react-native/typescript-config": "0.80.2",
-    "@types/react": "^19.1.0",
     "typescript": "5.0.4"
   },
   "engines": {
-    "node": ">=18"
-  }
+    "node": ">=18",
+    "pnpm": ">=8"
+  },
+  "packageManager": "pnpm@8.15.1"
 }

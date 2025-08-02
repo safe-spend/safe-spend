@@ -1,8 +1,24 @@
-# Safe Spend Windows Setup Script
-# This script helps set up the development environment for React Native Windows
+# Safe Spend Desktop App - Windows Setup Script
+# This script helps set up the development environment for the React Native Windows desktop app
 
-Write-Host "Safe Spend - React Native Windows Setup" -ForegroundColor Cyan
-Write-Host "=====================================" -ForegroundColor Cyan
+Write-Host "Safe Spend Desktop - React Native Windows Setup" -ForegroundColor Cyan
+Write-Host "=============================================" -ForegroundColor Cyan
+
+# Check if PNPM is installed
+Write-Host "Checking PNPM installation..." -ForegroundColor Yellow
+try {
+    $pnpmVersion = pnpm --version
+    Write-Host "✓ PNPM is installed: $pnpmVersion" -ForegroundColor Green
+} catch {
+    Write-Host "⚠ PNPM is not installed. Installing PNPM..." -ForegroundColor Yellow
+    try {
+        npm install -g pnpm
+        Write-Host "✓ PNPM installed successfully" -ForegroundColor Green
+    } catch {
+        Write-Host "✗ Failed to install PNPM. Please install manually: npm install -g pnpm" -ForegroundColor Red
+        exit 1
+    }
+}
 
 # Check if Node.js is installed
 Write-Host "Checking Node.js installation..." -ForegroundColor Yellow
@@ -14,19 +30,10 @@ try {
     exit 1
 }
 
-# Check npm
-Write-Host "Checking npm..." -ForegroundColor Yellow
-try {
-    $npmVersion = npm --version
-    Write-Host "✓ npm is available: $npmVersion" -ForegroundColor Green
-} catch {
-    Write-Host "✗ npm is not available" -ForegroundColor Red
-    exit 1
-}
-
-# Install dependencies
-Write-Host "Installing project dependencies..." -ForegroundColor Yellow
-npm install --legacy-peer-deps
+# Navigate to workspace root and install dependencies
+Write-Host "Installing monorepo dependencies..." -ForegroundColor Yellow
+Set-Location "../.."
+pnpm install
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "✓ Dependencies installed successfully" -ForegroundColor Green
@@ -65,7 +72,7 @@ if (Test-Path $scriptPath) {
         Write-Host "⚠ This script should be run as Administrator for dependency installation" -ForegroundColor Yellow
         Write-Host "Please run PowerShell as Administrator and execute:" -ForegroundColor Yellow
         Write-Host "  Set-ExecutionPolicy Unrestricted -Scope Process -Force" -ForegroundColor Cyan
-        Write-Host "  .\setup-windows.ps1" -ForegroundColor Cyan
+        Write-Host "  .\apps\desktop\setup-windows.ps1" -ForegroundColor Cyan
     } else {
         try {
             Set-ExecutionPolicy Unrestricted -Scope Process -Force
@@ -84,9 +91,14 @@ Write-Host ""
 Write-Host "Setup Complete!" -ForegroundColor Green
 Write-Host "===============" -ForegroundColor Green
 Write-Host ""
-Write-Host "To run the app:" -ForegroundColor Cyan
-Write-Host "1. Start Metro bundler: npm start" -ForegroundColor White
-Write-Host "2. In a new terminal: npm run windows" -ForegroundColor White
+Write-Host "To run the desktop app:" -ForegroundColor Cyan
+Write-Host "From workspace root:" -ForegroundColor White
+Write-Host "  pnpm desktop:start    # Start Metro bundler" -ForegroundColor White
+Write-Host "  pnpm desktop          # Run Windows app" -ForegroundColor White
+Write-Host ""
+Write-Host "Or from apps/desktop directory:" -ForegroundColor White
+Write-Host "  pnpm start            # Start Metro bundler" -ForegroundColor White
+Write-Host "  pnpm windows          # Run Windows app" -ForegroundColor White
 Write-Host ""
 Write-Host "If you encounter build issues:" -ForegroundColor Yellow
 Write-Host "- Ensure Visual Studio 2022 is installed with UWP and C++ workloads" -ForegroundColor White
