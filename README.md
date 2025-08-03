@@ -38,7 +38,8 @@ safe-spend/
 ├── apps/
 │   ├── mobile/         # React Native CLI app for Android & iOS
 │   │   ├── android/    # Android-specific code & config
-│   │   └── ios/        # iOS-specific code & config
+│   │   ├── ios/        # iOS-specific code & config
+│   │   └── metro.config.js  # Metro bundler config for mobile
 │   └── desktop/        # Tauri + React frontend app for Windows & macOS
 │       ├── windows/    # Windows-specific code & config
 │       └── macos/      # macOS-specific code & config
@@ -108,6 +109,18 @@ pnpm start
 
 Ensure you've set up Android Studio or Xcode + CocoaPods depending on your platform.
 
+### 5. Metro Configuration
+
+Each app has its own Metro configuration optimized for its specific needs:
+
+- **`apps/mobile/metro.config.js`** - React Native mobile app configuration
+  - Supports workspace package resolution
+  - Watches shared packages for hot reloading
+  - Configured for TypeScript and modern JS features
+  - Resolves modules from workspace root `node_modules`
+
+This approach allows each app to have its own bundling strategy while maintaining workspace package support.
+
 #### Desktop Development
 ```bash
 cd apps/desktop
@@ -135,7 +148,7 @@ brew install libwebkit2gtk-4.0
 | Monorepo Tooling       | **pnpm** + **Turborepo**                   |
 | Folder Structure       | `apps/`, `packages/` (workspace-based)     |
 | Code Sharing Strategy  | Shared `@common` package                   |
-| Metro Config           | **Single metro config** (cross-platform)   |
+| Metro Config           | **Individual metro configs** per app        |
 | TypeScript Config      | Root + per-package overrides               |
 | Cloud Storage Strategy | Support **multiple user-chosen** providers |
 
