@@ -1,0 +1,41 @@
+{
+  "name": "@safe-spend/root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Safe Spend - Offline-first personal finance manager",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "type-check": "turbo run type-check",
+    "setup:windows": "powershell -ExecutionPolicy Bypass -File scripts/setup-windows.ps1",
+    "setup:android-windows": "powershell -ExecutionPolicy Bypass -File scripts/setup-android.ps1",
+    "setup:macos": "bash scripts/setup-macos.sh",
+    "setup:android": "bash scripts/setup-android.sh",
+    "setup:ios": "bash scripts/setup-ios.sh"
+  },
+  "devDependencies": {
+    "@turbo/gen": "^1.10.0",
+    "turbo": "^1.10.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0",
+    "@react-native/metro-config": "^0.73.0",
+    "@react-native/babel-preset": "^0.73.0",
+    "@babel/plugin-transform-optional-chaining": "^7.23.0",
+    "@babel/plugin-transform-nullish-coalescing-operator": "^7.23.0",
+    "babel-plugin-module-resolver": "^5.0.0",
+    "babel-plugin-transform-remove-console": "^6.9.4",
+    "metro": "^0.80.0",
+    "metro-resolver": "^0.80.0",
+    "metro-react-native-babel-transformer": "^0.77.0",
+    "react-native-reanimated": "^3.6.0"
+  },
+  "packageManager": "pnpm@8.15.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

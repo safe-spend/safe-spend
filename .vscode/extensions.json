@@ -1,0 +1,13 @@
+{
+    "recommendations": [
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "ms-vscode.vscode-json",
+        "rust-lang.rust-analyzer",
+        "tauri-apps.tauri-vscode",
+        "ms-vscode.cmake-tools",
+        "ms-python.python"
+    ]
+}
