@@ -1,0 +1,16 @@
+{
+  "name": "@safe-spend/core",
+  "version": "1.0.0",
+  "description": "Core shared utilities for SafeSpend",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "keywords": ["safe-spend", "core", "utilities"],
+  "author": "SafeSpend Team",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

@@ -3,9 +3,15 @@
   "version": "0.0.1",
   "private": true,
   "description": "Safe Spend - Personal Finance Management Suite",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "desktop": "pnpm --filter @safe-spend/desktop windows",
     "desktop:start": "pnpm --filter @safe-spend/desktop start",
+    "mobile:android": "pnpm --filter @safe-spend/mobile android",
+    "mobile:start": "pnpm --filter @safe-spend/mobile start",
     "bootstrap": "pnpm install",
     "clean": "pnpm --recursive clean"
   },
@@ -13,6 +19,7 @@
     "@babel/runtime": "^7.28.2"
   },
   "devDependencies": {
+    "turbo": "^2.5.5",
     "typescript": "5.0.4"
   },
   "engines": {

@@ -1,0 +1,11 @@
+// Gradle init script to override React Native paths for monorepo
+allprojects {
+    beforeEvaluate {
+        // Override system properties that React Native uses to find node_modules
+        System.setProperty("react.nodeModulesDir", "${rootProject.projectDir}/../../../node_modules")
+        System.setProperty("node.modules.dir", "${rootProject.projectDir}/../../../node_modules")
+        
+        // Set environment variables that React Native CLI might use
+        project.ext.set("reactNativeNodeModules", "${rootProject.projectDir}/../../../node_modules")
+    }
+}

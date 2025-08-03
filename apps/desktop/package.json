@@ -5,7 +5,11 @@
   "description": "Safe Spend Desktop App (React Native Windows)",
   "scripts": {
     "windows": "npx @react-native-community/cli run-windows",
-    "start": "react-native start"
+    "start": "react-native start",
+    "build": "echo 'Desktop build not implemented yet'",
+    "lint": "echo 'Desktop lint not implemented yet'",
+    "test": "echo 'Desktop test not implemented yet'",
+    "clean": "echo 'Desktop clean not implemented yet'"
   },
   "dependencies": {
     "@babel/runtime": "^7.28.2",
