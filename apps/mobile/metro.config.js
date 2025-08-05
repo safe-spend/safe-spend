@@ -1,16 +1,16 @@
 const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
 const path = require('path');
 
-// Get the default Metro config for this directory (mobile app)
-const defaultConfig = getDefaultConfig(__dirname);
-
 // Define paths relative to the mobile app
 const projectRoot = __dirname;
 const workspaceRoot = path.resolve(projectRoot, '../..');
 
+// Get the default Metro config for this directory (mobile app)
+const defaultConfig = getDefaultConfig(projectRoot);
+
 /**
  * Metro configuration for Safe Spend Mobile App (React Native)
- * Configured for monorepo workspace with proper module resolution
+ * Configured for monorepo workspace with proper module resolution from workspace root
  */
 const config = {
     projectRoot,
@@ -25,7 +25,7 @@ const config = {
         // Support platform-specific extensions
         platforms: ['ios', 'android', 'native', 'web'],
 
-        // Resolve modules from workspace node_modules
+        // Resolve modules from workspace node_modules ONLY
         nodeModulesPaths: [
             path.resolve(workspaceRoot, 'node_modules'),
         ],
@@ -64,6 +64,9 @@ const config = {
             'woff',
             'woff2',
         ],
+
+        // Disable hierarchical lookup to prevent looking in mobile/node_modules
+        disableHierarchicalLookup: true,
     },
 
     transformer: {
