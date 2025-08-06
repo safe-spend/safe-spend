@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
-import { SafeSpendApp, Transaction } from "@safe-spend/core-ui";
+import React from 'react';
+import { HomeScreen, Transaction } from '@safe-spend/core-ui';
 
 // Mock data for demonstration
 const mockTransactions: Transaction[] = [
@@ -44,29 +43,11 @@ const mockTransactions: Transaction[] = [
     date: '4 days ago',
     type: 'income',
   },
-  {
-    id: '6',
-    title: 'Coffee Shop',
-    amount: 12.50,
-    category: 'Food',
-    date: '5 days ago',
-    type: 'expense',
-  },
 ];
 
-function App() {
-  const [userName] = useState("Alex Johnson");
-
-  const handleAddExpense = async () => {
-    // Future: Open add expense modal/page
+export const HomeScreenDemo: React.FC = () => {
+  const handleAddExpense = () => {
     console.log('Add Expense clicked');
-    // Example of calling Tauri backend
-    try {
-      const result = await invoke("log_action", { action: "add_expense" });
-      console.log(result);
-    } catch (error) {
-      console.error('Error calling Tauri backend:', error);
-    }
   };
 
   const handleViewBudget = () => {
@@ -81,13 +62,9 @@ function App() {
     console.log('View Settings clicked');
   };
 
-  const handleThemeToggle = (theme: 'light' | 'dark') => {
-    console.log(`Theme changed to: ${theme}`);
-  };
-
   return (
-    <SafeSpendApp
-      userName={userName}
+    <HomeScreen
+      userName="Alex Johnson"
       currentBalance={2847.50}
       monthlySpending={1235.75}
       monthlyBudget={1500.00}
@@ -96,10 +73,6 @@ function App() {
       onViewBudget={handleViewBudget}
       onViewReports={handleViewReports}
       onViewSettings={handleViewSettings}
-      onThemeToggle={handleThemeToggle}
-      initialTheme="light"
     />
   );
-}
-
-export default App;
+};
