@@ -1,6 +1,7 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/core";
+import { Button } from "@safe-spend/core-ui";
 import "./App.css";
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
 
   return (
     <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+      <h1>Welcome to SafeSpend - Creative Button Showcase</h1>
 
       <div className="row">
         <a href="https://vite.dev" target="_blank">
@@ -29,6 +30,23 @@ function App() {
       </div>
       <p>Click on the Tauri, Vite, and React logos to learn more.</p>
 
+      {/* Button Showcase */}
+      <div className="button-showcase" style={{ marginBottom: '2rem' }}>
+        <h2 style={{ marginBottom: '1rem' }}>Creative Button Collection</h2>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center', marginBottom: '1rem' }}>
+          <Button variant="primary" size="medium">Primary</Button>
+          <Button variant="gradient" size="medium">Gradient</Button>
+          <Button variant="glass" size="medium">Glass</Button>
+          <Button variant="neon" size="medium">Neon</Button>
+          <Button variant="magic" size="medium">Magic ✨</Button>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center' }}>
+          <Button variant="secondary" size="small">Secondary</Button>
+          <Button variant="success" size="large">Success</Button>
+          <Button variant="danger" size="medium">Danger</Button>
+        </div>
+      </div>
+
       <form
         className="row"
         onSubmit={(e) => {
@@ -41,7 +59,9 @@ function App() {
           onChange={(e) => setName(e.currentTarget.value)}
           placeholder="Enter a name..."
         />
-        <button type="submit">Greet</button>
+        <Button type="submit" variant="magic" size="medium">
+          Greet ✨
+        </Button>
       </form>
       <p>{greetMsg}</p>
     </main>
