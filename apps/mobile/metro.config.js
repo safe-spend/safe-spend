@@ -3,6 +3,7 @@ const exclusionList = require('metro-config/src/defaults/exclusionList');
 const path = require('path');
 
 const coreUiPath = path.resolve(__dirname, '../../packages/core-ui');
+const frameworkPath = path.resolve(__dirname, '../../packages/framework');
 
 /**
  * Metro configuration
@@ -11,15 +12,20 @@ const coreUiPath = path.resolve(__dirname, '../../packages/core-ui');
  * @type {import('@react-native/metro-config').MetroConfig}
  */
 const config = {
-    watchFolders: [coreUiPath],
+    watchFolders: [coreUiPath, frameworkPath],
     resolver: {
         blockList: exclusionList([
             // Prevent Metro from seeing duplicate modules
             new RegExp(`${path.resolve(coreUiPath, 'node_modules').replace(/[/\\]/g, '/')}.*`),
+            new RegExp(`${path.resolve(frameworkPath, 'node_modules').replace(/[/\\]/g, '/')}.*`),
         ]),
+        nodeModulesPaths: [
+            path.resolve(__dirname, 'node_modules'),
+        ],
         extraNodeModules: {
             'react': path.resolve(__dirname, 'node_modules/react'),
             'react-native': path.resolve(__dirname, 'node_modules/react-native'),
+            '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
         }
     },
 };

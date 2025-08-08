@@ -10,8 +10,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@react-native/new-app-screen": "0.80.2",
     "@safe-spend/core-ui": "file:../../packages/core-ui",
+    "@safe-spend/framework": "file:../../packages/framework",
     "react": "19.1.0",
     "react-native": "0.80.2"
   },

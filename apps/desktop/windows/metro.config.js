@@ -8,6 +8,7 @@ const rnwPath = fs.realpathSync(
 );
 
 const coreUiPath = path.resolve(__dirname, '../../../packages/core-ui');
+const frameworkPath = path.resolve(__dirname, '../../../packages/framework');
 
 
 /**
@@ -17,7 +18,7 @@ const coreUiPath = path.resolve(__dirname, '../../../packages/core-ui');
  * @type {import('@react-native/metro-config').MetroConfig}
  */
 const config = {
-  watchFolders: [coreUiPath],
+  watchFolders: [coreUiPath, frameworkPath],
   resolver: {
     blockList: exclusionList([
       // This stops "npx @react-native-community/cli run-windows" from causing the metro server to crash if its already running
@@ -30,6 +31,7 @@ const config = {
       /.*\.ProjectImports\.zip/,
       // Prevent Metro from seeing duplicate modules
       new RegExp(`${path.resolve(coreUiPath, 'node_modules').replace(/[/\\]/g, '/')}.*`),
+      new RegExp(`${path.resolve(frameworkPath, 'node_modules').replace(/[/\\]/g, '/')}.*`),
     ]),
     nodeModulesPaths: [
       path.resolve(__dirname, 'node_modules'),

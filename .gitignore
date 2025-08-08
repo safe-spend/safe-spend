@@ -138,6 +138,7 @@ _ReSharper*/
 *~
 
 #NuGet
+apps/desktop/windows/windows/packages/
 *.nupkg
 
 #ncrunch

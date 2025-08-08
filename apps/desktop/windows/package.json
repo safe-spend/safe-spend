@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@safe-spend/core-ui": "file:../../../packages/core-ui",
+    "@safe-spend/framework": "file:../../../packages/framework",
+    "lowdb": "^7.0.1",
     "react": "19.0.0",
     "react-native": "0.79.5",
     "react-native-windows": "^0.79.3"

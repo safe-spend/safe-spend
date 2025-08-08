@@ -22,6 +22,6 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@babel/runtime": "^7.28.2"
+    "@safe-spend/framework": "file:../framework"
   }
 }
