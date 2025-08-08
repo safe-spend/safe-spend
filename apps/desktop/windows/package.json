@@ -9,6 +9,7 @@
     "windows": "npx @react-native-community/cli run-windows"
   },
   "dependencies": {
+    "@safe-spend/core-ui": "file:../../../packages/core-ui",
     "react": "19.0.0",
     "react-native": "0.79.5",
     "react-native-windows": "^0.79.3"
@@ -17,13 +18,11 @@
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
-    "@react-native-community/cli": "18.0.0",
-    "@react-native-community/cli-platform-android": "18.0.0",
-    "@react-native-community/cli-platform-ios": "18.0.0",
-    "@react-native/babel-preset": "0.79.5",
-    "@react-native/eslint-config": "0.79.5",
-    "@react-native/metro-config": "0.79.5",
-    "@react-native/typescript-config": "0.79.5",
+    "@react-native-community/cli": "19.1.1",
+    "@react-native/babel-preset": "0.80.2",
+    "@react-native/eslint-config": "0.80.2",
+    "@react-native/metro-config": "0.80.2",
+    "@react-native/typescript-config": "0.80.2",
     "@types/jest": "^29.5.13",
     "@types/react": "^19.0.0",
     "@types/react-test-renderer": "^19.0.0",
@@ -31,8 +30,7 @@
     "jest": "^29.6.3",
     "prettier": "2.8.8",
     "react-test-renderer": "19.0.0",
-    "typescript": "5.0.4",
-    "metro-config": "^0.82.5"
+    "typescript": "5.0.4"
   },
   "engines": {
     "node": ">=18"

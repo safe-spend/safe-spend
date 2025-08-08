@@ -1,24 +1,23 @@
-const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
-
+const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
+const exclusionList = require('metro-config/src/defaults/exclusionList');
 const fs = require('fs');
 const path = require('path');
-const exclusionList = require('metro-config/src/defaults/exclusionList');
 
 const rnwPath = fs.realpathSync(
   path.resolve(require.resolve('react-native-windows/package.json'), '..'),
 );
 
-//
+const coreUiPath = path.resolve(__dirname, '../../../packages/core-ui');
+
 
 /**
  * Metro configuration
- * https://facebook.github.io/metro/docs/configuration
+ * https://reactnative.dev/docs/metro
  *
- * @type {import('metro-config').MetroConfig}
+ * @type {import('@react-native/metro-config').MetroConfig}
  */
-
 const config = {
-  //
+  watchFolders: [coreUiPath],
   resolver: {
     blockList: exclusionList([
       // This stops "npx @react-native-community/cli run-windows" from causing the metro server to crash if its already running
@@ -29,16 +28,12 @@ const config = {
       new RegExp(`${rnwPath}/build/.*`),
       new RegExp(`${rnwPath}/target/.*`),
       /.*\.ProjectImports\.zip/,
+      // Prevent Metro from seeing duplicate modules
+      new RegExp(`${path.resolve(coreUiPath, 'node_modules').replace(/[/\\]/g, '/')}.*`),
     ]),
-    //
-  },
-  transformer: {
-    getTransformOptions: async () => ({
-      transform: {
-        experimentalImportSupport: false,
-        inlineRequires: true,
-      },
-    }),
+    nodeModulesPaths: [
+      path.resolve(__dirname, 'node_modules'),
+    ]
   },
 };
 
