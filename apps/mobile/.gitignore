@@ -1,0 +1,15 @@
+# Expo specific
+.expo/
+.expo-shared/
+
+# Metro
+.metro-health-check*
+
+# React Native specific
+*.apk
+*.ipa
+android/
+ios/
+
+# Flipper
+.flipper/

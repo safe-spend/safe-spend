@@ -1,0 +1,18 @@
+{
+  "name": "@safe-spend/framework",
+  "version": "1.0.0",
+  "description": "Shared business logic, constants, data models for Safe Spend",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "rimraf": "^5.0.0"
+  },
+  "private": true
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@safe-spend/desktop",
+  "version": "1.0.0",
+  "description": "Tauri app for Safe Spend (Windows & macOS)",
+  "main": "src/main.ts",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "start": "npm run dev",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@safe-spend/core-ui": "file:../../packages/core-ui",
+    "@safe-spend/framework": "file:../../packages/framework"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "rimraf": "^5.0.0",
+    "@tauri-apps/cli": "^1.0.0"
+  },
+  "private": true
+}

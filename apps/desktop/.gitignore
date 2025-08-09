@@ -1,0 +1,9 @@
+# Tauri specific
+src-tauri/target/
+src-tauri/WixTools/
+
+# Platform builds
+*.exe
+*.dmg
+*.deb
+*.rpm
