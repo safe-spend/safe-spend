@@ -15,9 +15,7 @@ const config = {
     watchFolders: [coreUiPath, frameworkPath],
     resolver: {
         blockList: exclusionList([
-            // Prevent Metro from seeing duplicate modules
             new RegExp(`${path.resolve(coreUiPath, 'node_modules').replace(/[/\\]/g, '/')}.*`),
-            new RegExp(`${path.resolve(frameworkPath, 'node_modules').replace(/[/\\]/g, '/')}.*`),
         ]),
         nodeModulesPaths: [
             path.resolve(__dirname, 'node_modules'),

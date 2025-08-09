@@ -4,12 +4,17 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
+    "generate-index.ts": "barrelsby --delete",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "@types/lowdb": "^1.0.15",
-    "lowdb": "^7.0.1"
+    "lowdb": "^7.0.1",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "barrelsby": "^2.8.1"
   }
 }

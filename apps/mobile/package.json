@@ -12,8 +12,10 @@
   "dependencies": {
     "@safe-spend/core-ui": "file:../../packages/core-ui",
     "@safe-spend/framework": "file:../../packages/framework",
+    "@types/react-native-fs": "^2.8.3",
     "react": "19.1.0",
-    "react-native": "0.80.2"
+    "react-native": "0.80.2",
+    "react-native-fs": "^2.20.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

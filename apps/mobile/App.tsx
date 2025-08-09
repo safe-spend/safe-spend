@@ -5,9 +5,12 @@
  * @format
  */
 
-import { NewAppScreen } from '@react-native/new-app-screen';
 import { HomeScreen } from '@safe-spend/core-ui';
+import { registerPlatform } from '@safe-spend/framework';
 import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import { MobilePlatform } from './MobilePlatform';
+
+registerPlatform(new MobilePlatform());
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';

@@ -1,74 +1,73 @@
 import { StyleSheet, Pressable, ScrollView, View, Text } from 'react-native';
 import { useState, useEffect } from 'react';
-import { addName, getAllNames } from '@safe-spend/framework';
-import { Name } from '@safe-spend/framework/src/db/types';
+import { BaseRepository, initialize } from '@safe-spend/framework';
+import { UserAccount } from '@safe-spend/framework/src/db/entities/UserAccount';
+
+const userRepo: BaseRepository<UserAccount> = BaseRepository.getInstance('users');
 
 export const HomeScreen = () => {
-  const [localCount, setLocalCount] = useState(0);
-  const [names, setNames] = useState<Array<Name>>([]);
+  const [users, setUsers] = useState<UserAccount[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      const initialNames = getAllNames();
-      setNames(initialNames || []);
-    } catch (error) {
-      console.error("Error loading names:", error);
-      setNames([]);
-    }
+    setLoading(true);
+    initialize().then(() => {
+      userRepo.observeAll().subscribe((all) => {
+        setUsers(all || []);
+        setLoading(false);
+      });
+    });
   }, []);
 
-  const handleLocalButton = () => {
-    setLocalCount(prev => prev + 1);
-  };
-
-  const handleDbButton = () => {
+  const handleAddUser = async () => {
     try {
-      // Add a random number as a name
-      const randomName = Math.floor(Math.random() * 1000).toString();
-      addName(randomName);
-      // Update the names list safely
-      try {
-        const currentNames = getAllNames();
-        setNames(currentNames || []);
-      } catch (error) {
-        console.error("Error refreshing names:", error);
-      }
+      const now = new Date();
+      await userRepo.save({
+        id: Math.random().toString(36).slice(2),
+        name: `User ${users.length + 1}`,
+        email: `user${users.length + 1}@example.com`,
+        createdAt: now,
+        updatedAt: now,
+      });
     } catch (error) {
-      console.error("Error adding name:", error);
+      console.error('Error adding user:', error);
     }
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.topSection}>
-        <View style={styles.counterContainer}>
-          <Text style={styles.text}>Local Count: {localCount}</Text>
-          <Pressable style={styles.button} onPress={handleLocalButton}>
-            <Text style={styles.buttonText}>Increment Local</Text>
-          </Pressable>
+      {loading && (
+        <View style={styles.loadingOverlay}>
+          <Text style={styles.loadingText}>Loading...</Text>
         </View>
-
-        <View style={styles.counterContainer}>
-          <Text style={styles.text}>DB Names Count: {names.length}</Text>
-          <Pressable style={styles.button} onPress={handleDbButton}>
-            <Text style={styles.buttonText}>Add Random Name</Text>
-          </Pressable>
-        </View>
+      )}
+      <View style={styles.header}>
+        <Text style={styles.title}>User Accounts</Text>
+        <Pressable style={styles.addButton} onPress={handleAddUser}>
+          <Text style={styles.buttonText}>Add User</Text>
+        </Pressable>
       </View>
-
-      <View style={styles.namesContainer}>
-        <Text style={styles.title}>Names List:</Text>
-        <ScrollView style={styles.scrollView}>
-          {names.map((nameObj) => (
-            <View key={nameObj.id} style={styles.nameItem}>
-              <Text style={styles.nameText}>{nameObj.name}</Text>
-              <Text style={styles.dateText}>
-                {new Date(nameObj.createdAt).toLocaleString()}
-              </Text>
+      <ScrollView style={styles.scrollView}>
+        {users.map((user) => (
+          <View key={user.id} style={styles.userCard}>
+            <View style={styles.userHeader}>
+              <View style={styles.avatarPlaceholder}>
+                <Text style={styles.avatarText}>{user.name?.[0]?.toUpperCase() || '?'}</Text>
+              </View>
+              <View style={styles.userInfo}>
+                <Text style={styles.userName}>{user.name}</Text>
+                <Text style={styles.userEmail}>{user.email}</Text>
+              </View>
             </View>
-          ))}
-        </ScrollView>
-      </View>
+          </View>
+        ))}
+        {users.length === 0 && !loading && (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyText}>No users found</Text>
+            <Text style={styles.emptySubtext}>Add a user to get started</Text>
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 };
@@ -79,19 +78,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#111',
     padding: 20,
   },
-  topSection: {
-    marginBottom: 20,
-  },
-  counterContainer: {
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    gap: 10,
     marginBottom: 20,
   },
-  text: {
+  title: {
     fontSize: 24,
     color: '#eee',
+    fontWeight: 'bold',
   },
-  button: {
+  addButton: {
     backgroundColor: '#3498db',
     paddingHorizontal: 20,
     paddingVertical: 10,
@@ -101,33 +99,75 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   },
-  namesContainer: {
+  loadingContainer: {
     flex: 1,
-    backgroundColor: '#222',
-    borderRadius: 10,
-    padding: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  title: {
-    fontSize: 20,
+  loadingText: {
     color: '#eee',
-    marginBottom: 10,
+    fontSize: 18,
+  },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
   },
   scrollView: {
     flex: 1,
   },
-  nameItem: {
-    backgroundColor: '#333',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 8,
+  userCard: {
+    backgroundColor: '#222',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 10,
   },
-  nameText: {
+  userHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  avatarPlaceholder: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#3498db',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatarText: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  userInfo: {
+    marginLeft: 15,
+    flex: 1,
+  },
+  userName: {
     fontSize: 18,
     color: '#eee',
-    marginBottom: 4,
+    fontWeight: 'bold',
   },
-  dateText: {
-    fontSize: 12,
+  userEmail: {
+    fontSize: 14,
     color: '#999',
   },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  emptyText: {
+    fontSize: 18,
+    color: '#eee',
+    marginBottom: 8,
+  },
+  emptySubtext: {
+    fontSize: 14,
+    color: '#999',
+  }
 });
