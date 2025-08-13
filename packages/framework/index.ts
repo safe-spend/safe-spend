@@ -3,6 +3,9 @@
  */
 
 export * from "./src/constants";
+export * from "./src/auth/core/AccountManager";
+export * from "./src/auth/providers/IAuthProvider";
+export * from "./src/auth/providers/MicrosoftProvider";
 export * from "./src/db/core/DatabaseManager";
 export * from "./src/db/core/ObservableManager";
 export * from "./src/db/core/types";

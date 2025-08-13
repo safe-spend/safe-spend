@@ -34,8 +34,9 @@ export class DatabaseManager {
             this.db.data = JSON.parse(storedData) || {};
         } catch (error) {
             console.error('Failed to load from storage provider:', error);
-            throw error;
+           this.db.data = {};
         }
+        await this.persistToStorage();
     }
 
     private ensureCollection(collection: string): void {

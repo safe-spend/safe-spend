@@ -1,29 +1,29 @@
 import { Observable } from 'rxjs';
-import { Entity } from '../entities/Entity';
+import { Entity, EntityName } from '../entities/Entity';
 import { DatabaseManager } from '../core/DatabaseManager';
 import { ObservableManager } from '../core/ObservableManager';
 import { QueryOptions } from '../core/types';
 
 export class BaseRepository<T extends Entity> {
-    private static instances: Map<string, BaseRepository<any>> = new Map();
+    private static instances: Map<EntityName, BaseRepository<any>> = new Map();
     protected db: DatabaseManager;
     private observableManager: ObservableManager<T>;
 
     private constructor(
-        protected readonly collectionName: string
+        protected readonly collectionName: EntityName
     ) {
         this.db = DatabaseManager.getInstance();
         this.observableManager = new ObservableManager<T>();
     }
 
-    static getInstance<T extends Entity>(collectionName: string): BaseRepository<T> {
+    static getInstance<T extends Entity>(collectionName: EntityName): BaseRepository<T> {
         if (!this.instances.has(collectionName)) {
             this.instances.set(collectionName, new BaseRepository<T>(collectionName));
         }
         return this.instances.get(collectionName) as BaseRepository<T>;
     }
 
-    static async initialize(...entities: string[]): Promise<void> {
+    static async initialize(...entities: EntityName[]): Promise<void> {
         for (const entityName of entities) {
             const repo = this.getInstance(entityName);
             await repo.initializeData();
@@ -72,20 +72,32 @@ export class BaseRepository<T extends Entity> {
 
     async save(entity: T): Promise<void> {
         const now = new Date();
-        const isNew = !entity.id;
+        let isNew = false;
+        let id = entity.id;
 
-        if (isNew) {
-            entity.id = crypto.randomUUID();
+        if (!id) {
+            id = crypto.randomUUID();
+            entity.id = id;
             entity.createdAt = now;
+            isNew = true;
+        } else {
+            // Check DB for existing entity
+            const existing = await this.db.get<T>(this.collectionName, id);
+            isNew = !existing;
+            if (isNew) {
+                entity.createdAt = now;
+            } else if (existing && existing.createdAt) {
+                entity.createdAt = existing.createdAt;
+            }
         }
 
         entity.updatedAt = now;
 
-        await this.db.set(this.collectionName, entity.id, entity);
+        await this.db.set(this.collectionName, id, entity);
         this.observableManager.notifyChange({
             type: isNew ? 'create' : 'update',
             entity,
-            id: entity.id
+            id: id
         });
     }
 

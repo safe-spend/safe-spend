@@ -3,3 +3,7 @@ export interface Entity {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export enum EntityName {
+    UserAccounts = 'UserAccounts'
+}
