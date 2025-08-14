@@ -13,7 +13,7 @@ export interface Token {
     features: Feature[];
     accessToken: string;
     refreshToken: string;
-    expiry: Date;
+    expiry: string;
 }
 
 export enum Feature {

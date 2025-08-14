@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Pressable, ScrollView, StyleSheet, Linking } from 'react-native';
-import { initialize, AccountManager, UserAccount, Feature, BaseRepository, EntityName, IAuthProvider } from '@safe-spend/framework';
+import { initialize, AccountManager, UserAccount, Feature, BaseRepository, EntityName, IAuthProvider, sync } from '@safe-spend/framework';
 
 export const HomeScreen = () => {
   const [accounts, setAccounts] = useState<UserAccount[]>([]);
@@ -68,6 +68,10 @@ export const HomeScreen = () => {
     }
   };
 
+  const runSync = async (account: UserAccount) => {
+    await sync(account);
+  }
+
   const revokeAccess = async (account: UserAccount) => {
     setError(null);
     try {
@@ -107,6 +111,9 @@ export const HomeScreen = () => {
             <Pressable style={styles.providerButton} onPress={() => revokeAccess(account)}>
               <Text style={styles.providerButtonText}>Revoke</Text>
             </Pressable>
+            {account.token?.features.includes(Feature.MailSync) && <Pressable style={styles.providerButton} onPress={() => runSync(account)}>
+              <Text style={styles.providerButtonText}>Sync</Text>
+            </Pressable>}
           </View>
         ))}
         {accounts.length === 0 && <Text style={styles.emptyText}>No accounts found</Text>}

@@ -1,9 +1,6 @@
 import { Provider, Feature, UserAccount, Token } from "../../db/entities/UserAccount";
 import { IAuthProvider } from "./IAuthProvider";
-import moment from "moment";
-import * as Random from 'expo-random';
-import SHA256 from 'crypto-js/sha256';
-import encBase64 from 'crypto-js/enc-base64';
+import { Utils } from "../../utils/utils";
 
 interface StateData {
     scope: string;
@@ -37,7 +34,7 @@ export class MicrosoftProvider implements IAuthProvider {
 
     constructor() {
         this.scopeMap.set(Feature.Login, 'offline_access User.Read');
-        this.scopeMap.set(Feature.MailSync, 'Mail.Read');
+        this.scopeMap.set(Feature.MailSync, 'offline_access Mail.Read');
     }
 
     getDisplayDetails(feature: Feature): { displayName: string; description: string; icon: string; } {
@@ -86,12 +83,8 @@ export class MicrosoftProvider implements IAuthProvider {
         this.stateMap.delete(state);
 
         const tokenResponse = await this.fetchTokenResponse(code, data);
-        const token: Token = {
-            accessToken: tokenResponse.access_token,
-            refreshToken: tokenResponse.refresh_token,
-            expiry: moment().add(tokenResponse.expires_in, 'seconds').toDate(),
-            features: data.features,
-        }
+        const token = this.toToken(tokenResponse, undefined);
+        token.features.push(...data.features);
 
         const userResponse = await this.fetchUserResponse(token.accessToken);
         const user: UserAccount = {
@@ -114,16 +107,14 @@ export class MicrosoftProvider implements IAuthProvider {
             throw new Error("No access token available for this account");
         }
 
-        const token = account.token;
-        if (!token.expiry && moment().isAfter(moment(token.expiry))) {
-            return token.accessToken;
+        const expiry = new Date(account.token.expiry);
+        if (expiry.getTime() > Date.now()) {
+            return account.token.accessToken;
         }
 
         const tokenResponse = await this.refreshAccessToken(account);
-        token.refreshToken = tokenResponse.refresh_token;
-        token.accessToken = tokenResponse.access_token;
-        token.expiry = moment().add(tokenResponse.expires_in, 'seconds').toDate();
-        return token.accessToken;
+        account.token = this.toToken(tokenResponse, account.token);
+        return account.token.accessToken;
     }
 
     async revokeAccess(account: UserAccount): Promise<void> {
@@ -199,17 +190,30 @@ export class MicrosoftProvider implements IAuthProvider {
         return await response.json();
     }
 
+    private toToken(tokenResponse: TokenResponse, existingToken?: Token | undefined): Token {
+        const token = {
+            accessToken: tokenResponse.access_token || existingToken?.accessToken || '',
+            refreshToken: tokenResponse.refresh_token || existingToken?.refreshToken || '',
+            expiry: existingToken?.expiry || new Date().toISOString(),
+            features: existingToken?.features || []
+        }
+
+        if (tokenResponse.expires_in) {
+            token.expiry = new Date(Date.now() + tokenResponse.expires_in * 1000).toISOString();
+        }
+        return token;
+    }
+
     private generateCodeVerifier(length = 128): string {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
         let result = '';
-        const array = Random.getRandomBytes(length);
+        const array = Utils.getRandomBytes(length);
         array.forEach(i => result += chars[i % chars.length]);
         return result;
     }
 
     private generateCodeChallenge(codeVerifier: string): string {
-        const hash = SHA256(codeVerifier);
-        const base64 = hash.toString(encBase64);
+        const base64 = Utils.hashUsingSHA256(codeVerifier);
         return base64
             .replace(/\+/g, '-')
             .replace(/\//g, '_')

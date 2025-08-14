@@ -8,7 +8,7 @@
 import { HomeScreen } from '@safe-spend/core-ui';
 import { registerPlatform } from '@safe-spend/framework';
 import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import { MobilePlatform } from './MobilePlatform';
+import { MobilePlatform } from './platform/MobilePlatform';
 
 registerPlatform(new MobilePlatform());
 

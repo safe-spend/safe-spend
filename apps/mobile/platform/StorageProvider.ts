@@ -1,23 +1,5 @@
-import { IPlatform, ISecretProvider, IStorageProvider, registerPlatform } from "@safe-spend/framework";
-import RNFS, { ReadDirItem } from 'react-native-fs';
-
-export class MobilePlatform implements IPlatform {
-
-    private storageProvider: IStorageProvider;
-
-    constructor() {
-        this.storageProvider = new StorageProvider();
-    }
-
-    getStorageProvider(): IStorageProvider {
-        return this.storageProvider;
-    }
-
-    getSecretProvider(): ISecretProvider {
-        throw new Error("Method not implemented.");
-    }
-
-}
+import { IStorageProvider } from "@safe-spend/framework";
+import RNFS from 'react-native-fs';
 
 export class StorageProvider implements IStorageProvider {
     private basePath = RNFS.DocumentDirectoryPath;

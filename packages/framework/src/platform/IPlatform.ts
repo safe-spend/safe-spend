@@ -1,9 +1,11 @@
 import { ISecretProvider } from "./ISecretProvider";
 import { IStorageProvider } from "./IStorageProvider";
+import { IFileUtils } from "./IFileUtils";
 
 export interface IPlatform {
     getStorageProvider(): IStorageProvider
     getSecretProvider(): ISecretProvider
+    getFileUtils(): IFileUtils
 }
 
 let platform: IPlatform | undefined = undefined;
