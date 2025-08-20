@@ -1,4 +1,5 @@
 export interface ISecretProvider {
+    getSecret: (secretName: string) => Promise<string | null>;
     storeSecret: (secretName: string, secretValue: string) => Promise<void>;
-    getSecret: (secretName: string) => Promise<string>;
+    deleteSecret: (secretName: string) => Promise<void>;
 }

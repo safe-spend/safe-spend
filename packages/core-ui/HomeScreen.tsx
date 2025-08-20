@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Pressable, ScrollView, StyleSheet, Linking } from 'react-native';
-import { initialize, AccountManager, UserAccount, Feature, BaseRepository, EntityName, IAuthProvider, sync } from '@safe-spend/framework';
+// import { AccountManager, BaseRepository, EntityName, Feature, IAuthProvider, initialize, sync, UserAccount } from '@safe-spend/framework';
+import { Account, FeatureName, initialize, PM, ProviderName, sync, Token } from '@safe-spend/framework';
+import { useEffect, useState } from 'react';
+import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export const HomeScreen = () => {
-  const [accounts, setAccounts] = useState<UserAccount[]>([]);
-  const [accountManager, setAccountManager] = useState<AccountManager | null>(null);
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  // const [accountManager, setAccountManager] = useState<AccountManager | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,29 +17,17 @@ export const HomeScreen = () => {
       initialize().then(() => {
         console.log('Initialization complete');
         setLoading(false);
-        setAccountManager(AccountManager.getInstance());
-        const accountsDb: BaseRepository<UserAccount> = BaseRepository.getInstance(EntityName.UserAccounts);
-        accountsDb.observeAll().subscribe(accounts => {
-          console.log('Accounts loaded:', accounts);
-          setAccounts(accounts);
-        });
+        PM().getAccounts().then(setAccounts);
       })
     }
     const handleUrl = async (event: { url: string }) => {
       try {
         const url = event.url;
-        const match = url.match(/safespend:\/\/auth\/([^?]+)\?(.+)/);
-        if (!match) return;
-        const provider = match[1];
-        const params = new URLSearchParams(match[2]);
-        const code = params.get('code');
-        const state = params.get('state');
-        if (provider && code) {
-          setLoading(true);
-          await AccountManager.getInstance().handleCallback(provider, code, state || '');
-          const all = await AccountManager.getInstance()['db'].find();
-          setAccounts(all);
-        }
+        console.log('callback: ' + url);
+        setLoading(true);
+        await PM().handleCallback(url)
+        await PM().getAccounts().then(setAccounts);
+        setLoading(false);
       } catch (e) {
         setError('Login failed: ' + e);
       } finally {
@@ -56,10 +45,18 @@ export const HomeScreen = () => {
 
   }, [loading]);
 
-  const handleLogin = async (provider: IAuthProvider, feature: Feature) => {
+  const test = async () => {
+    await PM().handleCallback("safespend://auth?state=Google.UserProfile.-xNKjMic&code=4%2F0AVMBsJh127zhdf9RXjjrtVGGxhrKpFRrC-9XvmaPUSOOl2FwhwAo79heLGF06tHwnI6UwQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=consent")
+  }
+
+  const handleLogin = async (provider: ProviderName, feature: FeatureName) => {
     setError(null);
     try {
-      const url = await AccountManager.getInstance().requestNewAccount(provider.provider, feature);
+      const url = await PM().get(provider, feature)?.generateLoginUrl();
+      if (!url) {
+        setError('No login URL available for ' + provider);
+        return;
+      }
       console.log('Opening URL:', url);
       Linking.openURL(url);
     } catch (e) {
@@ -68,19 +65,50 @@ export const HomeScreen = () => {
     }
   };
 
-  const runSync = async (account: UserAccount) => {
+  const runSync = async (account: Account) => {
     await sync(account);
   }
 
-  const revokeAccess = async (account: UserAccount) => {
+  const revokeAccess = async (account: Account, token: Token) => {
     setError(null);
     try {
-      await AccountManager.getInstance().revokeAccess(account);
-      setAccounts(accounts.filter(a => a.id !== account.id));
+      const service = PM().get(account.providerName, token.featureName);
+      await service?.revokeAccess(account);
+      await PM().getAccounts().then(setAccounts);
     } catch (e) {
       setError('Failed to revoke access: ' + e);
     }
   };
+
+  const AccountFeatures = ({ account }: { account: Account }) => {
+
+    const [tokens, setTokens] = useState<Token[]>([]);
+    useEffect(() => {
+      const fetchTokens = async () => {
+        const tokens = await PM().getTokens(account);
+        setTokens(tokens);
+      };
+      fetchTokens();
+    }, [account]);
+
+    return <>
+      <Text style={styles.title}>Features</Text>
+      {tokens.map(token => (
+        <View key={token.id}>
+          <Text style={styles.accountEmail}>{token.featureName} Ops</Text>
+          <View style={styles.providersContainer}>
+            <Pressable style={styles.providerButton} onPress={() => revokeAccess(account, token)}>
+              <Text style={styles.providerButtonText}>Revoke</Text>
+            </Pressable>
+            {token.featureName == FeatureName.EmailAccess &&
+              <Pressable style={styles.providerButton} onPress={() => runSync(account)}>
+                <Text style={styles.providerButtonText}>Sync</Text>
+              </Pressable>}
+          </View>
+        </View>
+      ))}
+    </>;
+  }
 
   if (loading) {
     return (
@@ -101,29 +129,33 @@ export const HomeScreen = () => {
     <View style={styles.container}>
       {loading && <Text style={styles.loadingText}>Loading...</Text>}
       <Text style={styles.title}>User Accounts</Text>
+      <Pressable onPress={() => test()}>
+        <Text>Test</Text>
+      </Pressable>
       <ScrollView style={styles.scrollView}>
         {accounts.map(account => (
           <View key={account.id} style={styles.accountCard}>
             <Text style={styles.accountName}>{account.name}</Text>
             <Text style={styles.accountEmail}>{account.email}</Text>
-            <Text style={styles.accountProvider}>{account.provider}</Text>
-            <Text style={styles.accountProvider}>Features: {account.token?.features.join(', ')}</Text>
+            <Text style={styles.accountProvider}>{account.providerName}</Text>
+            <AccountFeatures account={account} />
+            {/* <Text style={styles.accountProvider}>Features: {account.token?.features.join(', ')}</Text>
             <Pressable style={styles.providerButton} onPress={() => revokeAccess(account)}>
               <Text style={styles.providerButtonText}>Revoke</Text>
             </Pressable>
             {account.token?.features.includes(Feature.MailSync) && <Pressable style={styles.providerButton} onPress={() => runSync(account)}>
               <Text style={styles.providerButtonText}>Sync</Text>
-            </Pressable>}
+            </Pressable>} */}
           </View>
         ))}
         {accounts.length === 0 && <Text style={styles.emptyText}>No accounts found</Text>}
       </ScrollView>
-      {[Feature.Login, Feature.MailSync, Feature.Storage].map(f => (<View key={f}>
-        <Text style={styles.title}>{f.toUpperCase()} Providers</Text>
+      {PM().getFeatures().map(f => (<View key={f}>
+        <Text style={styles.title}>{f} Providers</Text>
         <View style={styles.providersContainer}>
-          {accountManager && accountManager.getSupportedProviders(f).map(provider => (
-            <Pressable key={provider.provider} style={styles.providerButton} onPress={() => handleLogin(provider, f)}>
-              <Text style={styles.providerButtonText}>{provider.getDisplayDetails(f).displayName}</Text>
+          {PM().getProviders(f).map(p => (
+            <Pressable key={p} style={styles.providerButton} onPress={() => handleLogin(p, f)}>
+              <Text style={styles.providerButtonText}>{p}</Text>
             </Pressable>
           ))}
         </View>

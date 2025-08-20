@@ -4,7 +4,7 @@
  * 3. Given transaction data generate hash if all required fields are present
  */
 
-export interface IAdapter {
+export interface IImportAdapter {
     displayName: string;
     accountType: AccountType;
 }

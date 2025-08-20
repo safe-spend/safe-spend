@@ -1,7 +1,7 @@
-import { Transaction } from "./types/Transaction";
-import { File, FileType } from "./types/File";
+import { File, FileType } from "../types/File";
+import { Transaction } from "../types/Transaction";
 
-export interface IFileAdapter {
+export interface IFileImportAdapter {
     supportedFileTypes: FileType[];
     isFileSupported(file: File): Promise<boolean>;
     readTransactionsFromFile(file: File): Promise<Transaction[]>;

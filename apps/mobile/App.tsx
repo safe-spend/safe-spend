@@ -7,6 +7,7 @@
 
 import { HomeScreen } from '@safe-spend/core-ui';
 import { registerPlatform } from '@safe-spend/framework';
+import React from 'react';
 import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import { MobilePlatform } from './platform/MobilePlatform';
 
