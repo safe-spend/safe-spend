@@ -1,5 +1,5 @@
 import { Account } from "../../../db/entities/Account";
-import { FeatureName } from "../../../db/entities/FeatureName";
+import { FeatureName } from "../../../db/entities/Token";
 import { IUserProfileService } from "../../../provider-matrix/IUserProfileService";
 import { UserProfile } from "../../../provider-matrix/types/UserProfile";
 import { MicrosoftProvider } from "./MicrosoftProvider";

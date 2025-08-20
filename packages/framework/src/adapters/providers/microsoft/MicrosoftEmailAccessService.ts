@@ -1,5 +1,5 @@
 import { Account } from "../../../db/entities/Account";
-import { FeatureName } from "../../../db/entities/FeatureName";
+import { FeatureName } from "../../../db/entities/Token";
 import { IEmailAccessService } from "../../../provider-matrix/IEmailAccessService";
 import { Email, EmailAttachment, EmailContentType } from "../../../provider-matrix/types/Email";
 import { MicrosoftProvider } from "./MicrosoftProvider";

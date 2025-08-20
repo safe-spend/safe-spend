@@ -1,7 +1,5 @@
-import { Account } from "../../../db/entities/Account";
-import { FeatureName } from "../../../db/entities/FeatureName";
-import { ProviderName } from "../../../db/entities/ProviderName";
-import { Token } from "../../../db/entities/Token";
+import { Account, ProviderName } from "../../../db/entities/Account";
+import { FeatureName, Token } from "../../../db/entities/Token";
 import { AuthHandler } from "../../../provider-matrix/AuthHandler";
 import { StateProperties } from "../../../provider-matrix/types/StateProperties";
 import { Utils } from "../../../utils/utils";
